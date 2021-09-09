@@ -43,6 +43,7 @@ Process {
             $ComboBoxTypes,
             $CheckBoxSelectAll,
             $CheckBoxCopyContent,
+            $CheckBoxCopyContentForce,
             $OutputBox,
             $DGVResults,
             $GBLog,
@@ -332,6 +333,9 @@ Process {
                                     if ($CopyFiles -eq $true) {
                                         if (-not(Test-Path -Path $UpdatedPackageSourcePath)) {
                                             New-Item -Path $UpdatedPackageSourcePath -ItemType Directory | Out-Null
+                                        }
+                                        if($CopyFilesForce -eq $true){
+                                            $copyFilesSplat = @{Force=$true}
                                         }
                                         if ((Get-ChildItem -Path $UpdatedPackageSourcePath | Measure-Object).Count -eq 0) {
                                             if (Test-Path -Path $ExistingPackageSourcePath) {
@@ -1080,6 +1084,12 @@ Process {
         else {
             $CopyFiles = $false
         }
+        if ($CheckBoxCopyContentForce.Checked -eq $true) {
+            $CopyFilesForce = $true
+        }
+        else {
+            $CopyFilesForce = $false
+        }
         switch ($ComboBoxTypes.SelectedItem) {
             "Application" {
                 Invoke-CleanControls -Option Log
@@ -1128,6 +1138,12 @@ Process {
         }
         else {
             $CopyFiles = $false
+        }
+        if ($CheckBoxCopyContentForce.Checked -eq $true) {
+            $CopyFilesForce = $true
+        }
+        else {
+            $CopyFilesForce = $false
         }
         switch ($ComboBoxTypes.SelectedItem) {
             "Application" {
@@ -1263,6 +1279,11 @@ Process {
     $CheckBoxCopyContent.Size = New-Object System.Drawing.Size(200,20)
     $CheckBoxCopyContent.Text = "Copy content files to new location"
     $CheckBoxCopyContent.Anchor = "Top, Right"
+    $CheckBoxCopyContentForce = New-Object System.Windows.Forms.CheckBox
+    $CheckBoxCopyContentForce.Location = New-Object System.Drawing.Size(530,90) 
+    $CheckBoxCopyContentForce.Size = New-Object System.Drawing.Size(200,20)
+    $CheckBoxCopyContentForce.Text = "Force overwrite destination files"
+    $CheckBoxCopyContentForce.Anchor = "Top, Right"
     $CheckBoxSelectAll = New-Object System.Windows.Forms.CheckBox
     $CheckBoxSelectAll.Location = New-Object System.Drawing.Size(27,156) 
     $CheckBoxSelectAll.Size = New-Object System.Drawing.Size(15,15)
